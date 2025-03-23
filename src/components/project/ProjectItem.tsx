@@ -1,7 +1,8 @@
-import { Project } from "../../types"
-
+import { Link } from "react-router-dom"
 import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/Col"
+
+import { Project } from "../../types"
 
 interface ProjectItemProps {
   project: Project
@@ -12,9 +13,9 @@ const ProjectItem = ({ project }: ProjectItemProps) => {
     <Col>
       <Card>
         <Card.Header>
-          <a href={`/project/${project.id}`}>
+          <Link to={`/project/${project.id}`}>
             <strong>{project.name}</strong>
-          </a>
+          </Link>
         </Card.Header>
         <Card.Body>{project.description}</Card.Body>
       </Card>
