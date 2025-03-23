@@ -1,14 +1,39 @@
+import { useQuery } from "@tanstack/react-query"
+import { useParams } from "react-router-dom"
+
 import Alert from "react-bootstrap/Alert"
-import Container from "react-bootstrap/Container"
 import ListGroup from "react-bootstrap/ListGroup"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle } from "react-icons/fa"
 
-import useProject from "../../hooks/useProject"
-import { Category, User } from "../../types"
+import { Category, ProjectData, User } from "../../types"
+import AppConfig from "../../AppConfig"
+
+const queryFn = async (id: number) => {
+  const url = AppConfig.API_BASE_URL + "project/" + id
+  const lstoken = localStorage.getItem(AppConfig.TOKEN_ITEM_NAME)
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "omit",
+    headers: {
+      Authorization: `Bearer ${lstoken}`,
+    },
+  })
+  const data = await response.json()
+  if (response.status !== 200 || data.error) {
+    throw new Error(data.error)
+  }
+  return data as ProjectData
+}
 
 const ProjectContainer = () => {
-  const { data, isLoading, error } = useProject()
+  const { id } = useParams()
+  const iid = id ? parseInt(id) : 0
+  const queryKey = ["project", id]
+  const { data, error, isLoading } = useQuery({
+    queryKey,
+    queryFn: () => queryFn(iid),
+  })
 
   if (isLoading) {
     return <Spinner animation="border" />
@@ -16,11 +41,17 @@ const ProjectContainer = () => {
   if (error) {
     return (
       <Alert variant="danger">
-        <FaExclamationTriangle size={25} /> Error: {error}
+        <FaExclamationTriangle size={25} /> Error: {error?.message}
       </Alert>
     )
   }
-
+  if (!data || !data.project) {
+    return (
+      <Alert variant="danger">
+        <FaExclamationTriangle size={25} /> Error: Project not found
+      </Alert>
+    )
+  }
   return (
     <>
       <h1>{data.project.name}</h1>
