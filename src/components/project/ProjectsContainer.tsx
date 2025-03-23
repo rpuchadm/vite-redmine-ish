@@ -1,9 +1,11 @@
-import ProjectItem from "./ProjectItem"
-import useProjects from "../../hooks/useProjects"
-
 import Alert from "react-bootstrap/Alert"
+import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle } from "react-icons/fa"
+
+import ProjectItem from "./ProjectItem"
+import useProjects from "../../hooks/useProjects"
 
 const ProjectsContainer = () => {
   const { data, isLoading, error } = useProjects()
@@ -18,11 +20,13 @@ const ProjectsContainer = () => {
     )
   }
   return (
-    <div>
-      {data.projects.map((project) => (
-        <ProjectItem key={project.id} project={project} />
-      ))}
-    </div>
+    <Container>
+      <Row>
+        {data.projects.map((project) => (
+          <ProjectItem key={project.id} project={project} />
+        ))}
+      </Row>
+    </Container>
   )
 }
 
