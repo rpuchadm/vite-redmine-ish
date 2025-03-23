@@ -36,12 +36,17 @@ interface UsersData {
   roles: Role[]
   user_roles: UserRole[]
 }
+interface UserData {
+  user: User
+  roles: Role[]
+}
 export {
   Category,
   Project,
   ProjectData,
   ProjectsData,
   User,
+  UserData,
   UsersData,
   UserRole,
   Role,
