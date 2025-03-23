@@ -1,17 +1,25 @@
 import ProjectItem from "./ProjectItem"
 import useProjects from "../../hooks/useProjects"
 
+import Alert from "react-bootstrap/Alert"
+import Spinner from "react-bootstrap/Spinner"
+import { FaExclamationTriangle } from "react-icons/fa"
+
 const ProjectsContainer = () => {
-  const { projects, isLoading, error } = useProjects()
+  const { data, isLoading, error } = useProjects()
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Spinner animation="border" />
   }
   if (error) {
-    return <div>Error: {error}</div>
+    return (
+      <Alert variant="danger">
+        <FaExclamationTriangle size={25} /> Error: {error}
+      </Alert>
+    )
   }
   return (
     <div>
-      {projects.projects.map((project) => (
+      {data.projects.map((project) => (
         <ProjectItem key={project.id} project={project} />
       ))}
     </div>

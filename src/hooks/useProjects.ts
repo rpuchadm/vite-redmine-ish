@@ -5,7 +5,7 @@ import AppConfig from "../AppConfig"
 const useProjects = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>("")
-  const [projects, setProjects] = useState<ProjectsData>({
+  const [data, setData] = useState<ProjectsData>({
     count: 0,
     projects: [],
   })
@@ -21,9 +21,12 @@ const useProjects = () => {
           Authorization: `Bearer ${lstoken}`,
         },
       })
-      const data = await response.json().then((data) => data as ProjectsData)
-      if (data) {
-        setProjects(data)
+      const data = await response.json()
+
+      if (response.status !== 200 || data.error) {
+        setError(data.error)
+      } else {
+        setData(data as ProjectsData)
       }
       setIsLoading(false)
     }
@@ -31,7 +34,7 @@ const useProjects = () => {
     fetchData()
   }, [])
 
-  return { projects, isLoading, error }
+  return { data, isLoading, error }
 }
 
 export default useProjects
