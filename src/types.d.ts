@@ -22,5 +22,27 @@ interface User {
   username: string
   email: string
 }
-
-export { Category, Project, ProjectData, ProjectsData, User }
+interface Role {
+  id: number
+  name: string
+  description: string
+}
+interface UserRole {
+  user_id: number
+  role_id: number
+}
+interface UsersData {
+  users: User[]
+  roles: Role[]
+  user_roles: UserRole[]
+}
+export {
+  Category,
+  Project,
+  ProjectData,
+  ProjectsData,
+  User,
+  UsersData,
+  UserRole,
+  Role,
+}

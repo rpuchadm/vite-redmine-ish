@@ -47,7 +47,7 @@ const Header = () => {
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/projects">Projects</Nav.Link>
-              <Nav.Link href="/listapplications">Applications</Nav.Link>
+              <Nav.Link href="/users">Users</Nav.Link>
               <NavDropdown title="Other Apps" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="https://erp.mydomain.com/">
                   <FaIndustry /> Corp ERP

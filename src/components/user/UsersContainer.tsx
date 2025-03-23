@@ -6,12 +6,12 @@ import Row from "react-bootstrap/Row"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle } from "react-icons/fa"
 
-import ProjectItem from "./ProjectItem"
+import UserItem from "./UserItem"
 import AppConfig from "../../AppConfig"
-import { ProjectsData } from "../../types"
+import { UsersData } from "../../types"
 
 const queryFn = async () => {
-  const url = AppConfig.API_BASE_URL + "projects"
+  const url = AppConfig.API_BASE_URL + "users"
   const lstoken = localStorage.getItem(AppConfig.TOKEN_ITEM_NAME)
   const response = await fetch(url, {
     method: "GET",
@@ -24,11 +24,11 @@ const queryFn = async () => {
   if (response.status !== 200 || data.error) {
     throw new Error(data.error)
   }
-  return data as ProjectsData
+  return data as UsersData
 }
 
-const ProjectsContainer = () => {
-  const queryKey = ["projects"]
+const UsersContainer = () => {
+  const queryKey = ["users"]
   const { data, error, isLoading } = useQuery({ queryKey, queryFn })
   if (isLoading) {
     return <Spinner animation="border" />
@@ -40,22 +40,26 @@ const ProjectsContainer = () => {
       </Alert>
     )
   }
-  if (!data || !data.projects) {
+  if (!data || !data.users) {
     return (
       <Alert variant="danger">
-        <FaExclamationTriangle size={25} /> Error: Projects not found
+        <FaExclamationTriangle size={25} /> Error: Users not found
       </Alert>
     )
   }
   return (
     <Container>
       <Row>
-        {data.projects.map((project) => (
-          <ProjectItem key={project.id} project={project} />
+        {data.users.map((user) => (
+          <UserItem
+            key={user.id}
+            {...{ user, roles: data.roles }}
+            user_roles={data.user_roles.filter((ur) => ur.user_id === user.id)}
+          />
         ))}
       </Row>
     </Container>
   )
 }
 
-export default ProjectsContainer
+export default UsersContainer
