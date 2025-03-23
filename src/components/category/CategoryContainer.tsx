@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "react-router-dom"
+import dayjs from "dayjs"
 
 import Alert from "react-bootstrap/Alert"
 import Badge from "react-bootstrap/Badge"
@@ -70,6 +71,9 @@ const CategoryContainer = () => {
                 key={issue.id}
                 issue={issue}
                 user={data.users?.find((u) => u.id === issue.assigned_to_id)}
+                tracker={
+                  data.trackers?.find((t) => t.id === issue.tracker_id)?.name
+                }
               />
             ))}
           </ListGroup>
@@ -86,9 +90,10 @@ const CategoryContainer = () => {
 interface IssueItemProps {
   issue: Issue
   user?: User
+  tracker?: string
 }
 
-const IssueItem = ({ issue, user }: IssueItemProps) => {
+const IssueItem = ({ issue, user, tracker }: IssueItemProps) => {
   return (
     <ListGroup.Item>
       <Container>
@@ -98,19 +103,22 @@ const IssueItem = ({ issue, user }: IssueItemProps) => {
               <strong>{issue.subject}</strong>
             </Link>
           </Col>
-          <Col xs="auto">
-            <Badge bg="info">status: {issue.status}</Badge>
-          </Col>
+          <Col xs="auto">{tracker && <Badge>{tracker}</Badge>}</Col>
         </Row>
         <Row>
-          <Col>{issue.description}</Col>
+          <Col>
+            {issue.description}
+            <br />
+            <small>
+              created: {dayjs(issue.created_at).format("DD/MM/YYYY")}, modified:{" "}
+              {dayjs(issue.updated_at).format("DD/MM/YYYY")}
+              {issue.assigned_to_id && user ? (
+                <> assigned to: {user.username}</>
+              ) : null}
+            </small>
+          </Col>
           <Col xs="auto">
-            {issue.assigned_to_id && user ? (
-              <small>
-                <br />
-                {user.username}
-              </small>
-            ) : null}
+            <Badge bg="info">{issue.status}</Badge>
           </Col>
         </Row>
       </Container>

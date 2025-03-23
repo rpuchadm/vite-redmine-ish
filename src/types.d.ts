@@ -7,9 +7,14 @@ interface ProjectsData {
   count: number
   projects: Project[]
 }
+interface CategoryNumberOfIssues {
+  category_id: number
+  number_of_issues: number
+}
 interface ProjectData {
   project: Project
   categories?: Category[]
+  categorynumberofissues?: CategoryNumberOfIssues[]
   users?: User[]
 }
 interface Category {
@@ -22,6 +27,12 @@ interface CategoryData {
   project: Project
   issues?: Issue[]
   users?: User[]
+  trackers: Tracker[]
+}
+interface Tracker {
+  id: number
+  name: string
+  description: string
 }
 interface Issue {
   id: number
@@ -31,6 +42,8 @@ interface Issue {
   status: string
   project_id?: number
   category_id?: number
+  created_at: string
+  updated_at: string
   assigned_to_id?: number
 }
 interface IssueData {
@@ -60,10 +73,15 @@ interface UsersData {
 interface UserData {
   user: User
   roles: Role[]
+  issues?: Issue[]
+  projects?: Project[]
+  categories?: Category[]
+  trackers?: Tracker[]
 }
 export {
   Category,
   CategoryData,
+  CategoryNumberOfIssues,
   Issue,
   IssueData,
   Project,
@@ -74,4 +92,5 @@ export {
   UsersData,
   UserRole,
   Role,
+  Tracker,
 }

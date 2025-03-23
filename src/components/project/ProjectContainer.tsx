@@ -6,8 +6,17 @@ import ListGroup from "react-bootstrap/ListGroup"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle } from "react-icons/fa"
 
-import { Category, ProjectData, User } from "../../types"
+import {
+  Category,
+  CategoryNumberOfIssues,
+  ProjectData,
+  User,
+} from "../../types"
 import AppConfig from "../../AppConfig"
+import Badge from "react-bootstrap/esm/Badge"
+import Container from "react-bootstrap/esm/Container"
+import Row from "react-bootstrap/esm/Row"
+import Col from "react-bootstrap/esm/Col"
 
 const queryFn = async (id: number) => {
   const url = AppConfig.API_BASE_URL + "project/" + id
@@ -72,6 +81,11 @@ const ProjectContainer = () => {
                       )
                     : undefined
                 }
+                number_of_issues={
+                  data.categorynumberofissues?.find(
+                    (c) => c.category_id === category.id
+                  )?.number_of_issues
+                }
               />
             ))}
           </ListGroup>
@@ -84,15 +98,38 @@ const ProjectContainer = () => {
 interface CategoryItemProps {
   category: Category
   user?: User
+  number_of_issues?: number
 }
 
-const CategoryItem = ({ category, user }: CategoryItemProps) => {
+const CategoryItem = ({
+  category,
+  user,
+  number_of_issues,
+}: CategoryItemProps) => {
   return (
     <ListGroup.Item>
-      <Link to={`/category/${category.id}`}>
-        <strong>{category.name}</strong>
-      </Link>
-      {user && <small> ({user.username})</small>}
+      <Container>
+        <Row>
+          <Col xs="auto">
+            {number_of_issues ? (
+              <Badge pill bg="info">
+                {number_of_issues}
+              </Badge>
+            ) : (
+              <Badge pill bg="secondary">
+                0
+              </Badge>
+            )}
+          </Col>
+          <Col>
+            {" "}
+            <Link to={`/category/${category.id}`}>
+              <strong>{category.name}</strong>
+            </Link>
+          </Col>
+          <Col xs="auto">{user && <small>{user.username}</small>}</Col>
+        </Row>
+      </Container>
     </ListGroup.Item>
   )
 }
