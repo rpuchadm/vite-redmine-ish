@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 import Alert from "react-bootstrap/Alert"
 import ListGroup from "react-bootstrap/ListGroup"
@@ -89,7 +89,9 @@ interface CategoryItemProps {
 const CategoryItem = ({ category, user }: CategoryItemProps) => {
   return (
     <ListGroup.Item>
-      <strong>{category.name}</strong>
+      <Link to={`/category/${category.id}`}>
+        <strong>{category.name}</strong>
+      </Link>
       {user && <small> ({user.username})</small>}
     </ListGroup.Item>
   )

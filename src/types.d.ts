@@ -17,6 +17,27 @@ interface Category {
   name: string
   assigned_to_id?: number
 }
+interface CategoryData {
+  category: Category
+  project: Project
+  issues?: Issue[]
+  users?: User[]
+}
+interface Issue {
+  id: number
+  subject: string
+  description: string
+  tracker_id: number
+  status: string
+  project_id?: number
+  category_id?: number
+  assigned_to_id?: number
+}
+interface IssueData {
+  issue: Issue
+  category: Category
+  user?: User
+}
 interface User {
   id: number
   username: string
@@ -42,6 +63,9 @@ interface UserData {
 }
 export {
   Category,
+  CategoryData,
+  Issue,
+  IssueData,
   Project,
   ProjectData,
   ProjectsData,
