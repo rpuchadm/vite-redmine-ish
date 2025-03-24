@@ -9,7 +9,9 @@ import { FaExclamationTriangle } from "react-icons/fa"
 import {
   Category,
   CategoryNumberOfIssues,
+  Member,
   ProjectData,
+  Role,
   User,
 } from "../../types"
 import AppConfig from "../../AppConfig"
@@ -89,9 +91,53 @@ const ProjectContainer = () => {
               />
             ))}
           </ListGroup>
+          <br />
+        </>
+      )}
+      {data.members?.length && (
+        <>
+          Members:
+          <ListGroup>
+            {data.members.map((member) => (
+              <MemberItem
+                key={member.id}
+                member={member}
+                user={data.users?.find((u) => u.id === member.user_id)}
+                role={data.roles?.find((r) => r.id === member.role_id)}
+              />
+            ))}
+          </ListGroup>
+          <br />
         </>
       )}
     </>
+  )
+}
+
+interface MemberItemProps {
+  member: Member
+  user?: User
+  role?: Role
+}
+
+const MemberItem = ({ member, user, role }: MemberItemProps) => {
+  return (
+    <ListGroup.Item>
+      <Container>
+        <Row>
+          <Col>
+            {user && (
+              <Link to={`/user/${user.id}`}>
+                <strong>{user.username}</strong>
+              </Link>
+            )}
+          </Col>
+          <Col xs="auto">
+            <small>{role?.name}</small>
+          </Col>
+        </Row>
+      </Container>
+    </ListGroup.Item>
   )
 }
 

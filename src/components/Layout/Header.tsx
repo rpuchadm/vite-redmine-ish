@@ -11,6 +11,8 @@ import Navbar from "react-bootstrap/Navbar"
 
 import AppConfig from "../../AppConfig"
 import {
+  FaCog,
+  FaCogs,
   FaEnvelope,
   FaIndustry,
   FaRunning,
@@ -48,6 +50,9 @@ const Header = () => {
             <Nav className="me-auto">
               <Nav.Link href="/projects">Projects</Nav.Link>
               <Nav.Link href="/users">Users</Nav.Link>
+              <Nav.Link href="/settings">
+                <FaCog />
+              </Nav.Link>
               <NavDropdown title="Other Apps" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="https://erp.mydomain.com/">
                   <FaIndustry /> Corp ERP
