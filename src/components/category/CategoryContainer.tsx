@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, useParams } from "react-router-dom"
 import dayjs from "dayjs"
 
 import Alert from "react-bootstrap/Alert"
 import Badge from "react-bootstrap/Badge"
+import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/esm/Col"
 import Container from "react-bootstrap/esm/Container"
 import ListGroup from "react-bootstrap/ListGroup"
@@ -12,7 +13,9 @@ import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle, FaInfoCircle } from "react-icons/fa"
 
 import AppConfig from "../../AppConfig"
-import { CategoryData, Issue, User } from "../../types"
+import { Category, CategoryData, Issue, User } from "../../types"
+import CategoryForm from "./CategoryForm"
+import { useToast } from "../Layout/ToastContext"
 
 const queryFn = async (id: number) => {
   const url = AppConfig.API_BASE_URL + "category/" + id
@@ -31,6 +34,25 @@ const queryFn = async (id: number) => {
   return data as CategoryData
 }
 
+const mutationFn = async (data: { category: Category; method: string }) => {
+  const url = AppConfig.API_BASE_URL + "category/" + data.category.id
+  const lstoken = localStorage.getItem(AppConfig.TOKEN_ITEM_NAME)
+  const response = await fetch(url, {
+    method: data.method,
+    credentials: "omit",
+    headers: {
+      Authorization: `Bearer ${lstoken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.category),
+  })
+  const res = await response.json()
+  if (response.status !== 200 || res.error) {
+    throw new Error(res.error)
+  }
+  return res as Category
+}
+
 const CategoryContainer = () => {
   const { id } = useParams()
   const iid = id ? parseInt(id) : 0
@@ -38,6 +60,23 @@ const CategoryContainer = () => {
   const { data, error, isLoading } = useQuery({
     queryKey,
     queryFn: () => queryFn(iid),
+  })
+
+  const { addToast } = useToast()
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn,
+    onSuccess: () => {
+      addToast(
+        "Saved successfully",
+        "The category has been saved successfully",
+        { variant: "success" }
+      )
+      queryClient.invalidateQueries({ queryKey })
+    },
+    onError: (error: Error) => {
+      addToast("Error saving", error.message, { variant: "danger" })
+    },
   })
 
   if (isLoading) {
@@ -61,10 +100,9 @@ const CategoryContainer = () => {
     <>
       <Link to={`/project/${data.project.id}`}>{data.project.name}</Link>
       <h1>Category {data.category.name}</h1>
-
       {data.issues?.length ? (
-        <>
-          Issues:
+        <Card>
+          <Card.Header>Issues</Card.Header>
           <ListGroup>
             {data.issues.map((issue) => (
               <IssueItem
@@ -77,12 +115,14 @@ const CategoryContainer = () => {
               />
             ))}
           </ListGroup>
-        </>
+        </Card>
       ) : (
         <Alert variant="info">
           <FaInfoCircle /> No issues found.
         </Alert>
       )}
+      <hr />
+      <CategoryForm category={data.category} mutation={mutation} />
     </>
   )
 }
