@@ -6,14 +6,7 @@ import ListGroup from "react-bootstrap/ListGroup"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle } from "react-icons/fa"
 
-import {
-  Category,
-  CategoryNumberOfIssues,
-  Member,
-  ProjectData,
-  Role,
-  User,
-} from "../../types"
+import { Category, Member, ProjectData, Role, User } from "../../types"
 import AppConfig from "../../AppConfig"
 import Badge from "react-bootstrap/esm/Badge"
 import Container from "react-bootstrap/esm/Container"
@@ -91,9 +84,18 @@ const ProjectContainer = () => {
               />
             ))}
           </ListGroup>
-          <br />
         </>
       )}
+      <Link
+        to={`/category/0?project_id=${data.project.id}`}
+        className="float-end"
+      >
+        Add Category
+      </Link>
+
+      <br />
+      <hr />
+
       {data.members?.length && (
         <>
           Members:

@@ -64,13 +64,10 @@ const CategoryForm = ({ category, mutation }: CategoryFormProps) => {
             {category.id ? (
               <>{mutation.isPending ? <Spinner /> : <FaSave />} Update</>
             ) : (
-              <>
-                {mutation.isPending ? <Spinner /> : <FaSave />} <FaSave />{" "}
-                Create
-              </>
+              <>{mutation.isPending ? <Spinner /> : <FaSave />} Create</>
             )}
           </Button>
-          {category.id && (
+          {category.id ? (
             <Button
               variant="danger"
               onClick={handleDelete}
@@ -78,7 +75,7 @@ const CategoryForm = ({ category, mutation }: CategoryFormProps) => {
             >
               {mutation.isPending ? <Spinner /> : <FaTrash />} Delete
             </Button>
-          )}
+          ) : null}
         </Card.Footer>
       </Card>
     </Form>
