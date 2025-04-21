@@ -2,14 +2,26 @@ import { createContext, useContext, useState } from "react"
 import Toast from "react-bootstrap/Toast"
 import ToastContainer from "react-bootstrap/ToastContainer"
 
-// 1. Crear el contexto
-const ToastContext = createContext()
+interface ToastData {
+  id: number
+  header: string
+  body: string
+  variant: string
+}
 
-// 2. Crear el proveedor (ToastProvider)
-const ToastProvider = ({ children }) => {
-  const [toasts, setToasts] = useState([])
+interface ToastContextType {
+  addToast: (header: string, body: string, variant: string) => void
+}
 
-  const addToast = (header, body, variant = "success") => {
+const ToastContext = createContext<ToastContextType | undefined>(undefined)
+
+interface ToastProviderProps {
+  children: React.ReactNode
+}
+const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
+  const [toasts, setToasts] = useState<ToastData[]>([])
+
+  const addToast = (header: string, body: string, variant: string) => {
     const id = Date.now()
     setToasts((prev) => [...prev, { id, header, body, variant }])
     // Auto-eliminar el toast después de 5 segundos
@@ -18,7 +30,7 @@ const ToastProvider = ({ children }) => {
     }, 5000)
   }
 
-  const removeToast = (id) => {
+  const removeToast = (id: number) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
   }
 
@@ -26,7 +38,7 @@ const ToastProvider = ({ children }) => {
     <ToastContext.Provider value={{ addToast }}>
       {children}
       {/* Renderizar toasts activos */}
-      <ToastContainer position="middle-center">
+      <ToastContainer position="top-center">
         {toasts.map((toast) => (
           <Toast
             key={toast.id}

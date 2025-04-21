@@ -74,12 +74,12 @@ const CategoryContainer = () => {
       addToast(
         "Saved successfully",
         "The category has been saved successfully",
-        { variant: "success" }
+        "success"
       )
       queryClient.invalidateQueries({ queryKey })
     },
     onError: (error: Error) => {
-      addToast("Error saving", error.message, { variant: "danger" })
+      addToast("Error saving", error.message, "danger")
     },
   })
 

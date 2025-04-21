@@ -2,16 +2,18 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "react-router-dom"
 
 import Alert from "react-bootstrap/Alert"
+import Badge from "react-bootstrap/esm/Badge"
+import Col from "react-bootstrap/esm/Col"
+import Container from "react-bootstrap/esm/Container"
 import ListGroup from "react-bootstrap/ListGroup"
+import Modal from "react-bootstrap/Modal"
+import Row from "react-bootstrap/esm/Row"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle } from "react-icons/fa"
 
-import { Category, Member, ProjectData, Role, User } from "../../types"
+import { Category, ProjectData, Role, User } from "../../types"
 import AppConfig from "../../AppConfig"
-import Badge from "react-bootstrap/esm/Badge"
-import Container from "react-bootstrap/esm/Container"
-import Row from "react-bootstrap/esm/Row"
-import Col from "react-bootstrap/esm/Col"
+import { useState } from "react"
 
 const queryFn = async (id: number) => {
   const url = AppConfig.API_BASE_URL + "project/" + id
@@ -30,6 +32,32 @@ const queryFn = async (id: number) => {
   return data as ProjectData
 }
 
+/*
+const categoryMutationFn = async (data: {
+  category: Category
+  method: string
+}) => {
+  const url =
+    AppConfig.API_BASE_URL +
+    "category" +
+    (data.category.id ? "/" + data.category.id : "")
+  const lstoken = localStorage.getItem(AppConfig.TOKEN_ITEM_NAME)
+  const response = await fetch(url, {
+    method: data.method,
+    credentials: "omit",
+    headers: {
+      Authorization: `Bearer ${lstoken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.category),
+  })
+  const res = await response.json()
+  if (response.status !== 200 || res.error) {
+    throw new Error(res.error)
+  }
+  return res as Category
+}*/
+
 const ProjectContainer = () => {
   const { id } = useParams()
   const iid = id ? parseInt(id) : 0
@@ -38,6 +66,27 @@ const ProjectContainer = () => {
     queryKey,
     queryFn: () => queryFn(iid),
   })
+
+  const [showNewCategoryModal, setShowNewCategoryModal] = useState(false)
+  const handleCloseNewCategoryModal = () => setShowNewCategoryModal(false)
+  const handleShowNewCategoryModal = () => setShowNewCategoryModal(true)
+
+  //const { addToast } = useToast()
+  //const queryClient = useQueryClient()
+  /*const categoryMutation = useMutation({
+    mutationFn: categoryMutationFn,
+    onSuccess: () => {
+      addToast(
+        "Saved successfully",
+        "The category has been saved successfully",
+        { variant: "success" }
+      )
+      queryClient.invalidateQueries({ queryKey })
+    },
+    onError: (error: Error) => {
+      addToast("Error saving", error.message, { variant: "danger" })
+    },
+  })*/
 
   if (isLoading) {
     return <Spinner animation="border" />
@@ -86,12 +135,9 @@ const ProjectContainer = () => {
           </ListGroup>
         </>
       )}
-      <Link
-        to={`/category/0?project_id=${data.project.id}`}
-        className="float-end"
-      >
+      <a href="#" onClick={handleShowNewCategoryModal} className="float-end">
         Add Category
-      </Link>
+      </a>
 
       <br />
       <hr />
@@ -103,7 +149,6 @@ const ProjectContainer = () => {
             {data.members.map((member) => (
               <MemberItem
                 key={member.id}
-                member={member}
                 user={data.users?.find((u) => u.id === member.user_id)}
                 role={data.roles?.find((r) => r.id === member.role_id)}
               />
@@ -112,17 +157,28 @@ const ProjectContainer = () => {
           <br />
         </>
       )}
+      <Modal show={showNewCategoryModal} onHide={handleCloseNewCategoryModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>New Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Form goes here</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <button onClick={handleCloseNewCategoryModal}>Close</button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }
 
 interface MemberItemProps {
-  member: Member
   user?: User
   role?: Role
 }
 
-const MemberItem = ({ member, user, role }: MemberItemProps) => {
+const MemberItem = ({ user, role }: MemberItemProps) => {
   return (
     <ListGroup.Item>
       <Container>
