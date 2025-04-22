@@ -60,7 +60,7 @@ const CategoryContainer = () => {
   const { id } = useParams()
   const iid = id ? parseInt(id) : 0
   const queryKey = ["category", id]
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery<CategoryData>({
     queryKey,
     queryFn: () => queryFn(iid),
     enabled: !!iid,

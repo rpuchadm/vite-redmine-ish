@@ -56,10 +56,21 @@ interface Issue {
   updated_at: string
   assigned_to_id?: number
 }
+interface IComment {
+  content: string
+  created_at: string
+  id: number
+  issue_id: number
+  updated_at: string
+  user_id: number
+}
 interface IssueData {
+  comments?: IComment[]
   issue: Issue
   category: Category
-  user?: User
+  project: Project
+  users?: User[]
+  //user?: User
 }
 interface User {
   id: number
@@ -95,6 +106,7 @@ export {
   Category,
   CategoryData,
   CategoryNumberOfIssues,
+  IComment,
   Issue,
   IssueData,
   Member,
