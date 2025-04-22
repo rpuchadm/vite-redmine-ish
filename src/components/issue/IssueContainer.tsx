@@ -113,24 +113,28 @@ const IssueContainer = () => {
       status: "new",
     } as Issue)
 
+  const category = data?.issue?.category_id
+    ? data?.categories?.find((cat) => cat.id === data.issue.category_id)
+    : undefined
   return (
     <>
       {data && (
         <>
           <Link to={`/project/${data.project.id}`}>{data.project.name}</Link>
-          {data.category && (
+          {category && (
             <>
               {" "}
-              /{" "}
-              <Link to={`/category/${data.category.id}`}>
-                {data.category.name}
-              </Link>
+              / <Link to={`/category/${category.id}`}>{category.name}</Link>
             </>
           )}
           <h1>Issue {data.issue.subject}</h1>
         </>
       )}
-      <IssueForm {...{ issue, mutation }} />
+      <IssueForm
+        {...{ issue, mutation }}
+        categories={data?.categories}
+        trackers={data?.trackers}
+      />
     </>
   )
 }

@@ -66,6 +66,8 @@ interface IComment {
 }
 interface IssueData {
   comments?: IComment[]
+  categories?: Category[]
+  trackers?: Tracker[]
   issue: Issue
   category: Category
   project: Project

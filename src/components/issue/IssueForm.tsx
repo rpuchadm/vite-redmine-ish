@@ -4,13 +4,15 @@ import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"
 import Form from "react-bootstrap/Form"
 
-import { Issue } from "../../types"
+import { Category, Issue, Tracker } from "../../types"
 import { FaSave, FaTrash } from "react-icons/fa"
 import { UseMutationResult } from "@tanstack/react-query"
 import Spinner from "react-bootstrap/esm/Spinner"
 
 interface IssueFormProps {
   issue: Issue
+  categories?: Category[]
+  trackers?: Tracker[]
   mutation: UseMutationResult<
     Issue,
     Error,
@@ -22,16 +24,29 @@ interface IssueFormProps {
   >
 }
 
-const IssueForm = ({ issue, mutation }: IssueFormProps) => {
+const IssueForm = ({
+  issue,
+  categories,
+  trackers,
+  mutation,
+}: IssueFormProps) => {
   const [subject, setSubject] = useState(issue.subject)
+  const [category_id, setCategoryId] = useState(issue.category_id)
+  const [tracker_id, setTrackerId] = useState(issue.tracker_id)
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value)
+  }
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCategoryId(parseInt(e.target.value))
+  }
+  const handleTrackerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTrackerId(parseInt(e.target.value))
   }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const method = issue.id ? "PUT" : "POST"
     mutation.mutate({
-      issue: { ...issue, subject },
+      issue: { ...issue, subject, category_id, tracker_id },
       method,
     })
   }
@@ -58,6 +73,45 @@ const IssueForm = ({ issue, mutation }: IssueFormProps) => {
               Enter the subject of the issue
             </Form.Text>
           </Form.Group>
+          {trackers && (
+            <Form.Group className="mb-3" controlId="formBasicTracker">
+              <Form.Label>Tracker</Form.Label>
+              <Form.Select
+                aria-label="Default select example"
+                value={issue.tracker_id}
+                onChange={handleTrackerChange}
+              >
+                {trackers?.map((tracker) => (
+                  <option key={tracker.id} value={tracker.id}>
+                    {tracker.name}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Text className="text-muted">
+                Select the tracker for the issue
+              </Form.Text>
+            </Form.Group>
+          )}
+          {categories && (
+            <Form.Group className="mb-3" controlId="formBasicCategory">
+              <Form.Label>Category</Form.Label>
+              <Form.Select
+                aria-label="Default select example"
+                value={issue.category_id}
+                onChange={handleCategoryChange}
+              >
+                <option value="">Select a category</option>
+                {categories?.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Text className="text-muted">
+                Select the category for the issue
+              </Form.Text>
+            </Form.Group>
+          )}
         </Card.Body>
         <Card.Footer>
           <Button variant="primary" type="submit">
