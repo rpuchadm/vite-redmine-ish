@@ -114,6 +114,9 @@ const IssueForm = ({
                       value={issue.tracker_id}
                       onChange={handleTrackerChange}
                     >
+                      <option value="" disabled={issue.tracker_id !== 0}>
+                        Select a tracker
+                      </option>
                       {trackers?.map((tracker) => (
                         <option key={tracker.id} value={tracker.id}>
                           {tracker.name}
@@ -135,7 +138,9 @@ const IssueForm = ({
                       value={issue.category_id}
                       onChange={handleCategoryChange}
                     >
-                      <option value="">Select a category</option>
+                      <option value="" disabled={issue.category_id !== 0}>
+                        Select a category
+                      </option>
                       {categories?.map((category) => (
                         <option key={category.id} value={category.id}>
                           {category.name}
