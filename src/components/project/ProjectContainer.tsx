@@ -9,7 +9,7 @@ import ListGroup from "react-bootstrap/ListGroup"
 import Modal from "react-bootstrap/Modal"
 import Row from "react-bootstrap/esm/Row"
 import Spinner from "react-bootstrap/Spinner"
-import { FaExclamationTriangle } from "react-icons/fa"
+import { FaExclamationTriangle, FaPlusCircle } from "react-icons/fa"
 
 import { Category, ProjectData, Role, User } from "../../types"
 import AppConfig from "../../AppConfig"
@@ -140,6 +140,12 @@ const ProjectContainer = () => {
       </a>
 
       <br />
+      <Link
+        to={`/issue/0?project_id=${data.project.id}`}
+        className="btn btn-primary"
+      >
+        <FaPlusCircle size={25} /> New Issue
+      </Link>
       <hr />
 
       {data.members?.length && (

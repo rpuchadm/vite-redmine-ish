@@ -5,7 +5,7 @@ import Alert from "react-bootstrap/Alert"
 import Spinner from "react-bootstrap/Spinner"
 import { Issue, IssueData } from "../../types"
 import AppConfig from "../../AppConfig"
-import { FaExclamationTriangle } from "react-icons/fa"
+import { FaExclamationTriangle, FaInfoCircle } from "react-icons/fa"
 import { useToast } from "../Layout/ToastContext"
 import { Link } from "react-router-dom"
 import IssueForm from "./IssueForm"
@@ -98,18 +98,17 @@ const IssueContainer = () => {
 
   // sacar el parámetro project_id y category_id del querystring
   // si no existen, asignar 0
-  const project_id =
-    new URLSearchParams(window.location.search).get("project_id") || "0"
-  const category_id =
-    new URLSearchParams(window.location.search).get("category_id") || "0"
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  const project_id = parseInt(urlSearchParams.get("project_id") || "0")
+  const category_id = parseInt(urlSearchParams.get("category_id") || "0")
   const issue =
     data?.issue ||
     ({
       id: 0,
       subject: "",
       description: "",
-      project_id: parseInt(project_id),
-      category_id: parseInt(category_id),
+      project_id: project_id,
+      category_id: category_id,
       status: "new",
     } as Issue)
 
@@ -130,6 +129,27 @@ const IssueContainer = () => {
           <h1>Issue {data.issue.subject}</h1>
         </>
       )}
+      {project_id !== 0 && (
+        <>
+          <Link to={`/project/${project_id}`} className="btn btn-primary">
+            <FaInfoCircle size={25} /> Project #{project_id}
+          </Link>{" "}
+        </>
+      )}
+      {category_id !== 0 && (
+        <>
+          <Link to={`/category/${category_id}`} className="btn btn-primary">
+            <FaInfoCircle size={25} /> Category #{category_id}
+          </Link>{" "}
+        </>
+      )}
+      {iid == 0 ? (
+        <>
+          <br />
+          <br />
+          <h2>Create New Issue</h2>
+        </>
+      ) : null}
       <IssueForm
         {...{ issue, mutation }}
         categories={data?.categories}

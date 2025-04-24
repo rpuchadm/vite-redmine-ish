@@ -10,7 +10,11 @@ import Container from "react-bootstrap/esm/Container"
 import ListGroup from "react-bootstrap/ListGroup"
 import Row from "react-bootstrap/Row"
 import Spinner from "react-bootstrap/Spinner"
-import { FaExclamationTriangle, FaInfoCircle } from "react-icons/fa"
+import {
+  FaExclamationTriangle,
+  FaInfoCircle,
+  FaPlusCircle,
+} from "react-icons/fa"
 
 import AppConfig from "../../AppConfig"
 import { Category, CategoryData, Issue, User } from "../../types"
@@ -139,6 +143,13 @@ const CategoryContainer = () => {
               <FaInfoCircle /> No issues found.
             </Alert>
           )}
+          <br />
+          <Link
+            to={`/issue/0?project_id=${data.project.id}&category_id=${category.id}`}
+            className="btn btn-primary"
+          >
+            <FaPlusCircle size={25} /> New Issue
+          </Link>
           <hr />
         </>
       )}
