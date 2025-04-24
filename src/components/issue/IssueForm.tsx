@@ -35,10 +35,15 @@ const IssueForm = ({
 }: IssueFormProps) => {
   const [subject, setSubject] = useState<string>(issue.subject)
   const [description, setDescription] = useState<string>(issue.description)
+  const [status, setStatus] = useState<string>(issue.status || "")
   const [tracker_id, setTrackerId] = useState<number>(issue.tracker_id || 0)
   const [category_id, setCategoryId] = useState<number>(issue.category_id || 0)
+
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value)
+  }
+  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStatus(e.target.value)
   }
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -51,6 +56,7 @@ const IssueForm = ({
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategoryId(parseInt(e.target.value))
   }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const method = issue.id ? "PUT" : "POST"
@@ -153,6 +159,22 @@ const IssueForm = ({
                   </Form.Group>
                 </Col>
               )}
+            </Row>
+            <Row>
+              <Col xs={12} md={6}>
+                <Form.Group className="mb-3" controlId="formBasicStatus">
+                  <Form.Label>Status</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter issue status"
+                    value={status}
+                    onChange={handleStatusChange}
+                  />
+                  <Form.Text className="text-muted">
+                    Enter the status of the issue
+                  </Form.Text>
+                </Form.Group>
+              </Col>
             </Row>
           </Container>
         </Card.Body>

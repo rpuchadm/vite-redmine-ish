@@ -47,7 +47,7 @@ const mutationFn = async (data: { issue: Issue; method: string }) => {
     body: JSON.stringify(data.issue),
   })
   const res = await response.json()
-  if (response.status !== 200 || res.error) {
+  if ((response.status !== 200 && response.status !== 201) || res.error) {
     throw new Error(res.error)
   }
   return res as Issue
