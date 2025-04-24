@@ -10,8 +10,12 @@ import { useToast } from "../Layout/ToastContext"
 import { Link } from "react-router-dom"
 import IssueForm from "./IssueForm"
 
-const queryFn = async (id: number) => {
-  const url = AppConfig.API_BASE_URL + "issue/" + id
+const queryFn = async (id: number, project_id: number) => {
+  const url =
+    AppConfig.API_BASE_URL +
+    "issue/" +
+    id +
+    (id == 0 ? `?project_id=${project_id}` : "")
   const lstoken = localStorage.getItem(AppConfig.TOKEN_ITEM_NAME)
   const response = await fetch(url, {
     method: "GET",
@@ -52,11 +56,18 @@ const mutationFn = async (data: { issue: Issue; method: string }) => {
 const IssueContainer = () => {
   const { id } = useParams()
   const iid = id ? parseInt(id) : 0
+
+  // sacar el parámetro project_id y category_id del querystring
+  // si no existen, asignar 0
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  const project_id = parseInt(urlSearchParams.get("project_id") || "0")
+  const category_id = parseInt(urlSearchParams.get("category_id") || "0")
+
   const queryKey = ["category", id]
   const { data, error, isLoading } = useQuery<IssueData>({
     queryKey,
-    queryFn: () => queryFn(iid),
-    enabled: !!iid,
+    queryFn: () => queryFn(iid, project_id),
+    //enabled: !!iid,
   })
 
   const { addToast } = useToast()
@@ -96,11 +107,6 @@ const IssueContainer = () => {
     )
   }
 
-  // sacar el parámetro project_id y category_id del querystring
-  // si no existen, asignar 0
-  const urlSearchParams = new URLSearchParams(window.location.search)
-  const project_id = parseInt(urlSearchParams.get("project_id") || "0")
-  const category_id = parseInt(urlSearchParams.get("category_id") || "0")
   const issue =
     data?.issue ||
     ({
@@ -117,7 +123,7 @@ const IssueContainer = () => {
     : undefined
   return (
     <>
-      {data && (
+      {data?.issue && (
         <>
           <Link to={`/project/${data.project.id}`}>{data.project.name}</Link>
           {category && (
