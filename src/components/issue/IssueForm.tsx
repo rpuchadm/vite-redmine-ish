@@ -35,7 +35,7 @@ const IssueForm = ({
 }: IssueFormProps) => {
   const [subject, setSubject] = useState<string>(issue.subject)
   const [description, setDescription] = useState<string>(issue.description)
-  const [tracker_id, setTrackerId] = useState<number>(issue.tracker_id)
+  const [tracker_id, setTrackerId] = useState<number>(issue.tracker_id || 0)
   const [category_id, setCategoryId] = useState<number>(issue.category_id || 0)
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value)
@@ -114,7 +114,7 @@ const IssueForm = ({
                       value={issue.tracker_id}
                       onChange={handleTrackerChange}
                     >
-                      <option value="" disabled={issue.tracker_id !== 0}>
+                      <option value="" disabled={!!issue.tracker_id}>
                         Select a tracker
                       </option>
                       {trackers?.map((tracker) => (
@@ -138,7 +138,7 @@ const IssueForm = ({
                       value={issue.category_id}
                       onChange={handleCategoryChange}
                     >
-                      <option value="" disabled={issue.category_id !== 0}>
+                      <option value="" disabled={!!issue.category_id}>
                         Select a category
                       </option>
                       {categories?.map((category) => (
@@ -157,7 +157,16 @@ const IssueForm = ({
           </Container>
         </Card.Body>
         <Card.Footer>
-          <Button variant="primary" type="submit">
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={
+              mutation.isPending ||
+              subject === "" ||
+              description === "" ||
+              tracker_id === 0
+            }
+          >
             {issue.id ? (
               <>{mutation.isPending ? <Spinner /> : <FaSave />} Update</>
             ) : (
