@@ -26,6 +26,8 @@ interface ProjectData {
   users?: User[]
   members?: Member[]
   roles: Role[]
+  issues_no_category?: Issue[]
+  trackers: Tracker[]
 }
 interface Category {
   id: number

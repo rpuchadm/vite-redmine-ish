@@ -16,7 +16,7 @@ import {
   FaRunning,
   FaSuitcaseRolling,
 } from "react-icons/fa"
-import NavDropdown from "react-bootstrap/esm/NavDropdown"
+import NavDropdown from "react-bootstrap/NavDropdown"
 
 const Header = () => {
   const [modalVisible, setModalVisible] = React.useState(false)

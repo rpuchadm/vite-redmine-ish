@@ -1,13 +1,13 @@
 import { useState } from "react"
+import { UseMutationResult } from "@tanstack/react-query"
 
 import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"
 import Form from "react-bootstrap/Form"
+import Spinner from "react-bootstrap/Spinner"
+import { FaSave, FaTrash } from "react-icons/fa"
 
 import { Category } from "../../types"
-import { FaSave, FaTrash } from "react-icons/fa"
-import { UseMutationResult } from "@tanstack/react-query"
-import Spinner from "react-bootstrap/esm/Spinner"
 
 interface CategoryFormProps {
   category: Category

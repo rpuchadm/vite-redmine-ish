@@ -1,19 +1,21 @@
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useParams } from "react-router-dom"
+import dayjs from "dayjs"
 
 import Alert from "react-bootstrap/Alert"
-import Badge from "react-bootstrap/esm/Badge"
-import Col from "react-bootstrap/esm/Col"
-import Container from "react-bootstrap/esm/Container"
+import Badge from "react-bootstrap/Badge"
+import Card from "react-bootstrap/Card"
+import Col from "react-bootstrap/Col"
+import Container from "react-bootstrap/Container"
 import ListGroup from "react-bootstrap/ListGroup"
 import Modal from "react-bootstrap/Modal"
-import Row from "react-bootstrap/esm/Row"
+import Row from "react-bootstrap/Row"
 import Spinner from "react-bootstrap/Spinner"
 import { FaExclamationTriangle, FaPlusCircle } from "react-icons/fa"
 
-import { Category, ProjectData, Role, User } from "../../types"
+import { Category, Issue, ProjectData, Role, User } from "../../types"
 import AppConfig from "../../AppConfig"
-import { useState } from "react"
 
 const queryFn = async (id: number) => {
   const url = AppConfig.API_BASE_URL + "project/" + id
@@ -146,6 +148,28 @@ const ProjectContainer = () => {
       >
         <FaPlusCircle size={25} /> New Issue
       </Link>
+
+      {data.issues_no_category?.length ? (
+        <>
+          <hr />
+          <Card>
+            <Card.Header>Issues with no category</Card.Header>
+            <ListGroup>
+              {data.issues_no_category.map((issue) => (
+                <IssueItem
+                  key={issue.id}
+                  issue={issue}
+                  user={data.users?.find((u) => u.id === issue.assigned_to_id)}
+                  tracker={
+                    data.trackers?.find((t) => t.id === issue.tracker_id)?.name
+                  }
+                />
+              ))}
+            </ListGroup>
+          </Card>
+        </>
+      ) : null}
+
       <hr />
 
       {data.members?.length && (
@@ -238,6 +262,45 @@ const CategoryItem = ({
             </Link>
           </Col>
           <Col xs="auto">{user && <small>{user.username}</small>}</Col>
+        </Row>
+      </Container>
+    </ListGroup.Item>
+  )
+}
+
+interface IssueItemProps {
+  issue: Issue
+  user?: User
+  tracker?: string
+}
+
+const IssueItem = ({ issue, user, tracker }: IssueItemProps) => {
+  return (
+    <ListGroup.Item>
+      <Container>
+        <Row>
+          <Col>
+            <Link to={`/issue/${issue.id}`}>
+              <strong>{issue.subject}</strong>
+            </Link>
+          </Col>
+          <Col xs="auto">{tracker && <Badge>{tracker}</Badge>}</Col>
+        </Row>
+        <Row>
+          <Col>
+            {issue.description}
+            <br />
+            <small>
+              created: {dayjs(issue.created_at).format("DD/MM/YYYY")}, modified:{" "}
+              {dayjs(issue.updated_at).format("DD/MM/YYYY")}
+              {issue.assigned_to_id && user ? (
+                <> assigned to: {user.username}</>
+              ) : null}
+            </small>
+          </Col>
+          <Col xs="auto">
+            <Badge bg="info">{issue.status}</Badge>
+          </Col>
         </Row>
       </Container>
     </ListGroup.Item>
